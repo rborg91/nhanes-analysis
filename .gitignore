@@ -6,4 +6,5 @@
 *Rds
 *.html
 *.csv
+*.png
 renv/library/
