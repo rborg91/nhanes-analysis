@@ -1,0 +1,9 @@
+---
+title: 'Exploring BMI and Other Indicators of Health: Insights from the NHANES Dataset'
+author: "Robert Borg"
+date: "6th March 2025"
+output:
+  html_document:
+    self_contained: true
+    output_dir: "."
+---

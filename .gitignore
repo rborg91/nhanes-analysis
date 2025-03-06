@@ -1,0 +1,9 @@
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.log
+*Rds
+*.html
+*.csv
+renv/library/
