@@ -322,3 +322,128 @@ ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$BPDiaAve, method = "pearson")
 ```
+
+Looking at the relationship between BMI and hours slept per night, it was found that there is a weak but statistically significant negative correlation between number of hours slept versus BMI where BMI raises as hours slept reduces. In addition, there was also found to have been a similar statistically significant pattern between days of physical activity versus BMI where BMI increases as days of physical activity reduces.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 13. BMI vs Hours Slept per Night"}
+ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "BMI vs Hours Slept Per Night",
+         x = "BMI",
+         y = "Sleep Hours") +
+    scale_y_continuous(breaks = seq(2, 12, by = 1), limits = c(2, 12)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$BMI, nhanes_clean$SleepHrsNight, method = "pearson")
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 14. BMI vs Days of Physical Activity"}
+ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays)) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "BMI vs Days Physically Active",
+         x = "BMI",
+         y = "No of Physical Active Days") +
+    scale_y_continuous(breaks = seq(1, 7, by = 1), limits = c(1, 7)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$BMI, nhanes_clean$PhysActiveDays, method = "pearson")
+```
+
+While the main aim of this analysis was to look at the relationship of BMI to other health indicators and lifestyle choices, it was decided to further explore the relationship of days of physical activity to other indicators of health to see whether physical activity does in fact have a significant postivie influence on the health of the participants in this dataset.
+
+It was found that the participants who had diabetes actually had a higher median of days of physical activity as well as more distribution in the higher number of days of physical activity compared to those who do not have diabetes. On the other hand, there was no difference found in the distribution of physical activity days between those with varying levels of depression. Analysing the relationship between days of physical activity and total cholesterol, there was found to be a weak but signficantly significant positive relationshop where days of physical activity correlates slightly with a higher level of total cholesterol.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 15. Distribution of Physical Activity Days Between Diabetes Status"}
+ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Diabetes)) +
+    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    labs(title = "Physical Activity vs Diabetes",
+         x = "Days Physically Active",
+         y = "Diabetes Status") +
+    scale_x_continuous(breaks = seq(1, 7, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 16. Distribution of Physical Activity Days Between Depression Status"}
+ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Depressed)) +
+    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    labs(title = "Physical Activity vs Depression",
+         x = "Days Physically Active",
+         y = "Depression Frequency") +
+    scale_x_continuous(breaks = seq(1, 7, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 17. Relationship between Days of Physical Activity and Total Cholesterol"}
+ggplot(nhanes_clean, aes(x = PhysActiveDays, y = TotChol)) +
+    geom_point(color = "blue", size = 1) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "Physical Activity vs Total Cholesterol",
+         x = "Days Physically Active",
+         y = "Total Cholesterol (mg/dL)") +
+    scale_x_continuous(breaks = seq(1, 7, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$PhysActiveDays, nhanes_clean$TotChol, method = "pearson")
+```
+
+A similar analysis was completed on the effect of number of hours slept per night on similar health indicators.
+
+It was found that the distribution of sleep hours between those with diabetes and those without did not differ. However, while the distribution of sleep hours had a similar pattern between those who suffer from no days of depression and those who suffer from several days of depression, there was a distribution of lower number of sleep hours with those who suffered from depression on most days.
+
+In addition, there was found to be no statistically significant correlation between sleep hours and total cholesterol.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 18. Distribution of Sleep Hours Between Diabetes Status"}
+ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Diabetes)) +
+    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    labs(title = "Sleep vs Diabetes",
+         x = "Hours Slept Per Night",
+         y = "Diabetes Status") +
+    scale_x_continuous(breaks = seq(2, 12, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 19. Distribution of Sleep Hours Between Depression Status"}
+ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Depressed)) +
+    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    labs(title = "Sleep vs Depression",
+         x = "Hours Slept Per Night",
+         y = "Depression Frequency") +
+    scale_x_continuous(breaks = seq(2, 12, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 20. Relationship between Sleep Hours and Total Cholesterol"}
+ggplot(nhanes_clean, aes(x = SleepHrsNight, y = TotChol)) +
+    geom_point(color = "blue", size = 1) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "Sleep vs Total Cholesterol",
+         x = "Hours Slept Per Night",
+         y = "Total Cholesterol (mg/dL)") +
+    scale_x_continuous(breaks = seq(2, 12, by = 1)) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$SleepHrsNight, nhanes_clean$TotChol, method = "pearson")
+```
