@@ -7,3 +7,114 @@ output:
     self_contained: true
     output_dir: "."
 ---
+```{r include=FALSE}
+# Load the packages
+library(NHANES)
+library(tidyverse)
+library(ggplot2)
+```
+For the complete code and additional details of this project, please visit the [GitHub repository](https://github.com/rborg91/nhanes-analysis).
+
+The National Health and Nutrition Examination Survey (NHANES) is a comprehensive, ongoing initiative spearheaded by the National Center for Health Statistics (NCHS), under the umbrella of the Centres for Disease Control and Prevention (CDC). This program is meticulously designed to evaluate the health and nutritional wellbeing of adults and children across the United States, amassing a wealth of data through interviews, physical examinations, and laboratory assessments. The result is a rich, nationally representative dataset that offers unparalleled insights into population health. This analysis harnesses the NHANES dataset within the R environment to investigate the intricate relationship between Body Mass Index (BMI)—a key measure of body composition—and a spectrum of health indicators, including blood pressure, depression, diabetes, sleep patterns, and alcohol and smoking habits. Additionally, it examines the distribution of BMI across diverse demographics, such as gender, education levels, and household income brackets. The primary objective is to identify meaningful patterns and associations that can shape public health strategies and enhance our understanding of how BMI intersects with broader health outcomes in the U.S. population.
+
+All analyses and visualisations were crafted using R, and the corresponding code will be presented below for the reader’s reference and transparency.
+
+The NHANES dataset was obtained from the NHANES library within R and loaded with the below code:
+```{r}
+data(NHANES)
+```
+
+Due to the high vast number of fields included in the NHANES dataset, it was decided to only include those fields that were necessary for the purpose of the analysis.
+```{r}
+nhanes_clean <- NHANES |>
+  select (ID, Gender, Age, Education,
+          HHIncome, Height,
+          BMI, BPSysAve, BPDiaAve,
+          TotChol, Diabetes, Depressed,
+          SleepHrsNight, PhysActiveDays,
+          Alcohol12PlusYr, Smoke100)
+```
+
+In addition, it was decided to only focus on adults and therefore exclude those participants who were aged under 18 from our modified dataset.
+```{r}
+nhanes_clean <- nhanes_clean |> 
+  filter(Age >= 18)
+```
+
+It was also imperative that no missing data was included in the dataset and so rows where there was at least one field with an N/A result were removed from the modified dataset.
+```{r}
+nhanes_clean <- nhanes_clean |>
+  filter(!is.na(ID) & !is.na(Gender) & !is.na(Age) & !is.na(Education) &
+           !is.na(HHIncome) & !is.na(BMI) & !is.na(BPSysAve) & 
+           !is.na(TotChol) & !is.na(Diabetes) & !is.na(Depressed) & 
+           !is.na(SleepHrsNight) & !is.na(PhysActiveDays) & 
+           !is.na(Alcohol12PlusYr) & !is.na(Smoke100))
+```
+
+Two additional columns were also created in the modified dataset to categorise BMI into their standard categories and Household Income into larger brackets.
+```{r}
+# Create new column that categorises BMI
+# and places column after BMI
+nhanes_clean <- nhanes_clean |> 
+  mutate(BMI_Category = case_when(
+    BMI < 18.5 ~ "Underweight",
+    BMI < 25 ~ "Normal",
+    BMI < 30 ~ "Overweight",
+    BMI >= 30 ~ "Obese",
+    TRUE ~ NA_character_
+  )) |>
+  relocate(BMI_Category, .after = BMI)
+
+# Convert new BMI column to a factor type and order levels
+# to correct order
+nhanes_clean$BMI_Category <- factor(nhanes_clean$BMI_Category, 
+                                    levels = c("Underweight", "Normal", "Overweight", "Obese"))
+
+# Create new column that categorises Household income
+# into broader brackets
+nhanes_clean <- nhanes_clean |> 
+  mutate(HHIncomeV2 = case_when(
+    HHIncome %in% c(" 0-4999", " 5000-9999", "10000-14999", "15000-19999", "20000-24999") ~ "0-24999",
+    HHIncome %in% c("25000-34999", "35000-44999", "45000-54999", "55000-64999") ~ "25000-64999",
+    HHIncome %in% c("65000-74999", "75000-99999") ~ "65000-99999",
+    HHIncome == "more 99999" ~ "100000+",
+    TRUE ~ NA_character_
+  )) |>
+  relocate(HHIncomeV2, .after = HHIncome)
+
+# Convert new HHIncome column to a factor type and order levels
+# to correct order
+nhanes_clean$HHIncomeV2 <- factor(nhanes_clean$HHIncomeV2, 
+                                  levels = c("0-24999", "25000-64999", "65000-99999", "100000+"))
+```
+
+After these actions were completed, the modified dataset contained 2,809 rows of data compared to the original dataset which contained 10,000 rows.
+```{r}
+# Count rows in each dataset, therefore showing how many
+# of the original rows were removed from the above filters
+nrow(NHANES)
+nrow(nhanes_clean)
+```
+
+A quick analysis of the dataset showed that there were 1,349 females included versus 1,460 males; the minimum age recorded was 20 years while the maximum age was 80 years (median age was 45 years); the median BMI was 27.29 (categorised as "Overweight) with a significant outlier maximum of 63.30; and a median total cholesterol of 5.020 (considered to be within the recommended range).
+
+See below the code as well as the results of these statistics as well as others.
+```{r}
+summary(nhanes_clean)
+```
+
+Looking specifically at the distribution of BMI in the dataset, it was found that the main collection of participants sat at around 20 to 35 BMI with some outliers progressing beyond this to 50-60 BMI.
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 1. BMI Distribution"}
+ggplot(nhanes_clean, aes(x = BMI)) +
+  geom_histogram(binwidth = 1,
+                 fill = "lightblue",
+                 color = "black",
+                 size = 0.25) +
+  labs(title = "BMI Distribution",
+       x = "BMI",
+       y = "Count") +
+  theme_minimal(base_size = 6) +
+  theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
