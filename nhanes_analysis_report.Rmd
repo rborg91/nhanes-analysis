@@ -20,11 +20,13 @@ The National Health and Nutrition Examination Survey (NHANES) is a comprehensive
 All analyses and visualisations were crafted using R, and the corresponding code will be presented below for the reader’s reference and transparency.
 
 The NHANES dataset was obtained from the NHANES library within R and loaded with the below code:
+
 ```{r}
 data(NHANES)
 ```
 
 Due to the high vast number of fields included in the NHANES dataset, it was decided to only include those fields that were necessary for the purpose of the analysis.
+
 ```{r}
 nhanes_clean <- NHANES |>
   select (ID, Gender, Age, Education,
@@ -36,12 +38,14 @@ nhanes_clean <- NHANES |>
 ```
 
 In addition, it was decided to only focus on adults and therefore exclude those participants who were aged under 18 from our modified dataset.
+
 ```{r}
 nhanes_clean <- nhanes_clean |> 
   filter(Age >= 18)
 ```
 
 It was also imperative that no missing data was included in the dataset and so rows where there was at least one field with an N/A result were removed from the modified dataset.
+
 ```{r}
 nhanes_clean <- nhanes_clean |>
   filter(!is.na(ID) & !is.na(Gender) & !is.na(Age) & !is.na(Education) &
@@ -52,6 +56,7 @@ nhanes_clean <- nhanes_clean |>
 ```
 
 Two additional columns were also created in the modified dataset to categorise BMI into their standard categories and Household Income into larger brackets.
+
 ```{r}
 # Create new column that categorises BMI
 # and places column after BMI
@@ -89,6 +94,7 @@ nhanes_clean$HHIncomeV2 <- factor(nhanes_clean$HHIncomeV2,
 ```
 
 After these actions were completed, the modified dataset contained 2,809 rows of data compared to the original dataset which contained 10,000 rows.
+
 ```{r}
 # Count rows in each dataset, therefore showing how many
 # of the original rows were removed from the above filters
@@ -96,14 +102,17 @@ nrow(NHANES)
 nrow(nhanes_clean)
 ```
 
-A quick analysis of the dataset showed that there were 1,349 females included versus 1,460 males; the minimum age recorded was 20 years while the maximum age was 80 years (median age was 45 years); the median BMI was 27.29 (categorised as "Overweight) with a significant outlier maximum of 63.30; and a median total cholesterol of 5.020 (considered to be within the recommended range).
+A quick analysis of the dataset showed that there were 1,349 females included versus 1,460 males; the minimum age recorded was 20 years while the maximum age was 80 years (median age was 45 years); the median BMI was 27.29 (categorised as "Overweight) with a significant outlier maximum of 63.30; and a median total cholesterol of 5.020 (considered to be within the recommended range) with a minimum of 1,530 and and maximum of 12.280.
 
 See below the code as well as the results of these statistics as well as others.
+
 ```{r}
 summary(nhanes_clean)
 ```
 
-Looking specifically at the distribution of BMI in the dataset, it was found that the main collection of participants sat at around 20 to 35 BMI with some outliers progressing beyond this to 50-60 BMI.
+
+The distribution of BMI and total cholesterol amongst the dataset can also be illustrated in the following charts.
+
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 1. BMI Distribution"}
 ggplot(nhanes_clean, aes(x = BMI)) +
   geom_histogram(binwidth = 1,
@@ -113,8 +122,203 @@ ggplot(nhanes_clean, aes(x = BMI)) +
   labs(title = "BMI Distribution",
        x = "BMI",
        y = "Count") +
-  theme_minimal(base_size = 6) +
+  theme_minimal(base_size = 10) +
   theme(plot.title = element_text(margin = margin(b = 10)),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 2. Total Cholesterol Distribution"}
+ggplot(nhanes_clean, aes(x = TotChol)) +
+  geom_histogram(binwidth = 0.5,
+                 fill = "lightblue",
+                 color = "black",
+                 size = 0.25) +
+  labs(title = "Total Cholesterol Distribution",
+       x = "Total Cholesterol (mg/dL)",
+       y = "Count") +
+  theme_minimal(base_size = 10) +
+  theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+
+Looking at the distribution of BMI between the male participants and the female participants, it was found that males tend to have a higher median BMI compared to females, while females have a larger spread of distribution.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 3. BMI among genders - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Gender)) +
+  geom_boxplot(fill = "lightblue",
+               color = "black",
+               width = 0.5,
+               size = 0.25,
+               outlier.size = 0.25) +
+  labs(title = "BMI - Comparison Between Genders",
+       x = "BMI",
+       y = "Gender") +
+  theme_minimal(base_size = 10) +
+  theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+The distribution of BMI sat lower amongst College graduates compared to the other levels of education (highest attained), while a similar pattern was found within the highest income bracket ($100,000+) compared to the lower income brackets. Nonetheless, the median BMI for both College graduates as well as for the highest income bracket both sat above 25.
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 4. BMI among education levels - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Education)) +
+  geom_boxplot(fill = "lightblue",
+               color = "black",
+               width = 0.5,
+               size = 0.25,
+               outlier.size = 0.25) +
+  labs(title = "BMI - Comparison Among Different Education Levels",
+       x = "BMI",
+       y = "Education Level") +
+  theme_minimal(base_size = 10) +
+  theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 5. BMI among income brackets - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = HHIncomeV2)) +
+  geom_boxplot(fill = "lightblue",
+               color = "black",
+               width = 0.5,
+               size = 0.25,
+               outlier.size = 0.25) +
+  labs(title = "BMI - Comparison Between Household Income Brackets",
+       x = "BMI",
+       y = "Household Income Bracket ($)") +
+  theme_minimal(base_size = 10) +
+  theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+Looking at the distribution of BMI for various medical conditions, it was found that those participants that had diabetes did have a BMI that sat much higher than those without diabetes. While the difference between those that have depression often and not was not as pronounced, it was found that those that had depression on most days still had a somewhat higher BMI spread than those that did not.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 6. BMI among diabetes status - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Diabetes)) +
+    geom_boxplot(fill = "lightblue",
+                 color = "black",
+                 width = 0.5,
+                 size = 0.25,
+                 outlier.size = 0.25) +
+    labs(title = "BMI - Comparison of Diabetes Status",
+         x = "BMI",
+         y = "Diabetes Status") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 7. BMI among depression status - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Depressed)) +
+    geom_boxplot(fill = "lightblue",
+                 color = "black",
+                 width = 0.5,
+                 size = 0.25,
+                 outlier.size = 0.25) +
+    labs(title = "BMI - Comparison of Frequency of Depression",
+         x = "BMI",
+         y = "Depression Status") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+Finally, looking at the distribution of BMI amongst those who drink or smoke, it was found that those participants who drank more than 12 standard drinks in any on year tended to have a lower BMI median and spread compared to those who never, while even those who smoked at least 100 cigarettes in their lifetime tended to have a slightly lower median BMI, the spread was very similar to those who didn't smoke.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 8. BMI among drinkers and non-drinkers - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Alcohol12PlusYr)) +
+    geom_boxplot(fill = "lightblue",
+                 color = "black",
+                 width = 0.5,
+                 size = 0.25,
+                 outlier.size = 0.25) +
+    labs(title = "BMI - Comparison of Alcohol Status",
+         x = "BMI",
+         y = "12 Drink Consumption in Any One Year") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 9. BMI among smokers and non-smokers - boxplot"}
+ggplot(nhanes_clean, aes(x = BMI, y = Smoke100)) +
+    geom_boxplot(fill = "lightblue",
+                 color = "black",
+                 width = 0.5,
+                 size = 0.25,
+                 outlier.size = 0.25) +
+    labs(title = "BMI - Comparison of Smoking Status",
+         x = "BMI",
+         y = "Smoked >=100 Cigarettes in Lifetime") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+While the distribution of BMI informed us of some information, the analysis also needed to see the direct relationship with BMI compared to other fields within the dataset and see whether these relationships were both strong and significant.
+
+Firstly, the relationship between BMI and total cholesterol was analysed. As shown in the chart below, their was no significant direct relationship between BMI and total cholesterol, even when the general pattern was split between males and females.
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 10. BMI vs Total Cholesterol"}
+ggplot(nhanes_clean, aes(x = BMI, y = TotChol)) +
+    geom_point(color = "blue", size = 1) +
+    geom_smooth(aes(color = Gender), method = "lm", se = FALSE, size = 1) +
+    labs(title = "BMI vs Total Cholesterol",
+         x = "BMI",
+         y = "Total Cholesterol (mg/dL)") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+When performing a correlation test on this data and the relationship between BMI and total cholesterol (including within the male and female groups), it was found that there were very small correlations between these two variables but more note worthy was that the correlations were not statistically significant (i.e. p-value > 0.05). Hence, it can be determined within our dataset that there is no relationship between BMI and total cholesterol.
+
+```{r}
+# Correlation and p-value for BMI vs Total Cholesterol
+cor.test(nhanes_clean$BMI, nhanes_clean$TotChol, method = "pearson")
+
+# Correlation and p-value for BMI vs Total Cholesterol (Males)
+cor.test(subset(nhanes_clean, Gender == "male")$BMI, subset(nhanes_clean, Gender == "male")$TotChol, method = "pearson")
+
+# Correlation and p-value for BMI vs Total Cholesterol (Females)
+cor.test(subset(nhanes_clean, Gender == "female")$BMI, subset(nhanes_clean, Gender == "female")$TotChol, method = "pearson")
+```
+
+The relationship between BMI and both systolic and diastolic blood pressure was analysed. As shown on the charts below and based on the Pearson's product-moment correlation calculations, it was found that there is a weak but nonetheless positive relationship between BMI and blood pressure, where blood pressure rises as BMI increases. It was also found that these correlations are statistically significant.
+
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 11. BMI vs Systolic Blood Pressure"}
+ggplot(nhanes_clean, aes(x = BMI, y = BPSysAve)) +
+    geom_point(color = "blue", size = 1) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "BMI vs Systolic Blood Pressure",
+         x = "BMI",
+         y = "Systolic BP") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$BMI, nhanes_clean$BPSysAve, method = "pearson")
+```
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 12. BMI vs Diastolic Blood Pressure"}
+ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
+    geom_point(color = "blue", size = 1) +
+    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    labs(title = "BMI vs Diastolic Blood Pressure",
+         x = "BMI",
+         y = "Diastolic BP") +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(margin = margin(b = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)))
+```
+```{r}
+cor.test(nhanes_clean$BMI, nhanes_clean$BPDiaAve, method = "pearson")
 ```
