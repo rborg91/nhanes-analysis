@@ -29,6 +29,34 @@ The NHANES dataset was obtained from the NHANES library within R and loaded with
 data(NHANES)
 ```
 
+Please note that custom themes were created which is utilised later in the visualisation creation code further on.
+```{r warning=FALSE, message=FALSE}
+custom_theme <- theme_minimal(base_size = 10) +
+        theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+
+custom_histogram <- geom_histogram(binwidth = 1,
+                              fill = "lightblue",
+                              color = "black",
+                              size = 0.25)
+
+custom_boxplot <- geom_boxplot(fill = "lightblue",
+                               color = "black",
+                               width = 0.5,
+                               size = 0.25,
+                               outlier.size = 0.25)
+
+custom_point <- geom_point(color = "blue", 
+                           size = 1)
+
+custom_smooth <- geom_smooth(method = "lm", 
+                             color = "red", 
+                             se = TRUE, 
+                             size = 1)
+```
+
+
 Due to the vast number of fields included in the NHANES dataset, it was decided to only include those fields that were necessary for the purpose of the analysis.
 
 ```{r}
@@ -121,33 +149,21 @@ The distribution of BMI and total cholesterol amongst the dataset can also be il
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 1. BMI Distribution"}
 ggplot(nhanes_clean, aes(x = BMI)) +
-  geom_histogram(binwidth = 1,
-                 fill = "lightblue",
-                 color = "black",
-                 size = 0.25) +
+  custom_histogram +
   labs(title = "BMI Distribution",
        x = "BMI",
        y = "Count") +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ```
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 2. Total Cholesterol Distribution"}
 ggplot(nhanes_clean, aes(x = TotChol)) +
-  geom_histogram(binwidth = 0.5,
-                 fill = "lightblue",
-                 color = "black",
-                 size = 0.25) +
+  custom_histogram +
   labs(title = "Total Cholesterol Distribution",
        x = "Total Cholesterol (mg/dL)",
        y = "Count") +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ```
 
 # BMI Across Demographic Groups
@@ -158,18 +174,11 @@ Analysis of BMI distribution by gender revealed that males tend to have a slight
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 3. BMI among genders - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Gender)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Between Genders",
        x = "BMI",
        y = "Gender") +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ```
 
 ## BMI Across Education Levels and Income Brackets
@@ -177,33 +186,19 @@ ggplot(nhanes_clean, aes(x = BMI, y = Gender)) +
 The distribution of BMI sat lower amongst College graduates compared to the other levels of education (highest attained), while a similar pattern was found within the highest income bracket ($100,000+) compared to the lower income brackets. Nonetheless, the median BMI for both College graduates as well as for the highest income bracket both sat above 25.
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 4. BMI among education levels - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Education)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Among Different Education Levels",
        x = "BMI",
        y = "Education Level") +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 5. BMI among income brackets - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = HHIncomeV2)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Between Household Income Brackets",
        x = "BMI",
        y = "Household Income Bracket ($)") +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ```
 
 # Relationships with Health Indicators
@@ -214,33 +209,19 @@ Looking at the distribution of BMI for various medical conditions, it was found 
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 6. BMI among diabetes status - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Diabetes)) +
-    geom_boxplot(fill = "lightblue",
-                 color = "black",
-                 width = 0.5,
-                 size = 0.25,
-                 outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "BMI - Comparison of Diabetes Status",
          x = "BMI",
          y = "Diabetes Status") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 7. BMI among depression status - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Depressed)) +
-    geom_boxplot(fill = "lightblue",
-                 color = "black",
-                 width = 0.5,
-                 size = 0.25,
-                 outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "BMI - Comparison of Frequency of Depression",
          x = "BMI",
          y = "Depression Status") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 
 ## BMI and Alcohol/Smoking
@@ -249,33 +230,19 @@ Finally, looking at the distribution of BMI amongst those who drink or smoke, it
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 8. BMI among drinkers and non-drinkers - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Alcohol12PlusYr)) +
-    geom_boxplot(fill = "lightblue",
-                 color = "black",
-                 width = 0.5,
-                 size = 0.25,
-                 outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "BMI - Comparison of Alcohol Status",
          x = "BMI",
          y = "12 Drink Consumption in Any One Year") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 9. BMI among smokers and non-smokers - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Smoke100)) +
-    geom_boxplot(fill = "lightblue",
-                 color = "black",
-                 width = 0.5,
-                 size = 0.25,
-                 outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "BMI - Comparison of Smoking Status",
          x = "BMI",
          y = "Smoked >=100 Cigarettes in Lifetime") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 
 While the distribution of BMI informed us of some information, the analysis also needed to see the direct relationship with BMI compared to other fields within the dataset and see whether these relationships were both strong and significant.
@@ -285,15 +252,12 @@ While the distribution of BMI informed us of some information, the analysis also
 Firstly, the relationship between BMI and total cholesterol was analysed. As shown in the chart below, their was no significant direct relationship between BMI and total cholesterol, even when the general pattern was split between males and females.
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 10. BMI vs Total Cholesterol"}
 ggplot(nhanes_clean, aes(x = BMI, y = TotChol)) +
-    geom_point(color = "blue", size = 1) +
+    custom_point +
     geom_smooth(aes(color = Gender), method = "lm", se = FALSE, size = 1) +
     labs(title = "BMI vs Total Cholesterol",
          x = "BMI",
          y = "Total Cholesterol (mg/dL)") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 
 When performing a correlation test on this data and the relationship between BMI and total cholesterol (including within the male and female groups), it was found that there were very small correlations between these two variables but more note worthy was that the correlations were not statistically significant (i.e. p-value > 0.05). Hence, it can be determined within our dataset that there is no relationship between BMI and total cholesterol.
@@ -315,30 +279,24 @@ The relationship between BMI and both systolic and diastolic blood pressure was 
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 11. BMI vs Systolic Blood Pressure"}
 ggplot(nhanes_clean, aes(x = BMI, y = BPSysAve)) +
-    geom_point(color = "blue", size = 1) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_point +
+    custom_smooth +
     labs(title = "BMI vs Systolic Blood Pressure",
          x = "BMI",
          y = "Systolic BP") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$BPSysAve, method = "pearson")
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 12. BMI vs Diastolic Blood Pressure"}
 ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
-    geom_point(color = "blue", size = 1) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_point +
+    custom_smooth +
     labs(title = "BMI vs Diastolic Blood Pressure",
          x = "BMI",
          y = "Diastolic BP") +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$BPDiaAve, method = "pearson")
@@ -350,30 +308,24 @@ Looking at the relationship between BMI and hours slept per night, it was found 
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 13. BMI vs Hours Slept per Night"}
 ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_smooth +
     labs(title = "BMI vs Hours Slept Per Night",
          x = "BMI",
          y = "Sleep Hours") +
     scale_y_continuous(breaks = seq(2, 12, by = 1), limits = c(2, 12)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$SleepHrsNight, method = "pearson")
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 14. BMI vs Days of Physical Activity"}
 ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays)) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_smooth +
     labs(title = "BMI vs Days Physically Active",
          x = "BMI",
          y = "No of Physical Active Days") +
     scale_y_continuous(breaks = seq(1, 7, by = 1), limits = c(1, 7)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$PhysActiveDays, method = "pearson")
@@ -387,40 +339,31 @@ It was found that the participants who had diabetes actually had a higher median
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 15. Distribution of Physical Activity Days Between Diabetes Status"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Diabetes)) +
-    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "Physical Activity vs Diabetes",
          x = "Days Physically Active",
          y = "Diabetes Status") +
     scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 16. Distribution of Physical Activity Days Between Depression Status"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Depressed)) +
-    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "Physical Activity vs Depression",
          x = "Days Physically Active",
          y = "Depression Frequency") +
     scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 17. Relationship between Days of Physical Activity and Total Cholesterol"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = TotChol)) +
-    geom_point(color = "blue", size = 1) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_point +
+    custom_smooth +
     labs(title = "Physical Activity vs Total Cholesterol",
          x = "Days Physically Active",
          y = "Total Cholesterol (mg/dL)") +
     scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$PhysActiveDays, nhanes_clean$TotChol, method = "pearson")
@@ -436,40 +379,31 @@ In addition, there was found to be no statistically significant correlation betw
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 18. Distribution of Sleep Hours Between Diabetes Status"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Diabetes)) +
-    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "Sleep vs Diabetes",
          x = "Hours Slept Per Night",
          y = "Diabetes Status") +
     scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 19. Distribution of Sleep Hours Between Depression Status"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Depressed)) +
-    geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+    custom_boxplot +
     labs(title = "Sleep vs Depression",
          x = "Hours Slept Per Night",
          y = "Depression Frequency") +
     scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 20. Relationship between Sleep Hours and Total Cholesterol"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = TotChol)) +
-    geom_point(color = "blue", size = 1) +
-    geom_smooth(method = "lm", color = "red", se = TRUE, size = 1) +
+    custom_point +
+    custom_smooth +
     labs(title = "Sleep vs Total Cholesterol",
          x = "Hours Slept Per Night",
          y = "Total Cholesterol (mg/dL)") +
     scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(margin = margin(b = 10)),
-          axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)))
+    custom_theme
 ```
 ```{r}
 cor.test(nhanes_clean$SleepHrsNight, nhanes_clean$TotChol, method = "pearson")

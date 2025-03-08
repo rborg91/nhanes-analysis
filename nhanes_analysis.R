@@ -6,6 +6,31 @@ library(ggplot2)
 # Load the NHANES dataset into your environment
 data(NHANES)
 
+# Create custom themes to be used later on in visualisations
+custom_theme <- theme_minimal(base_size = 6) +
+        theme(plot.title = element_text(margin = margin(b = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+
+custom_histogram <- geom_histogram(binwidth = 0.5,
+                              fill = "lightblue",
+                              color = "black",
+                              size = 0.25)
+
+custom_boxplot <- geom_boxplot(fill = "lightblue",
+                               color = "black",
+                               width = 0.5,
+                               size = 0.25,
+                               outlier.size = 0.25)
+
+custom_point <- geom_point(color = "blue", 
+                           size = 0.25)
+
+custom_smooth <- geom_smooth(method = "lm", 
+                             color = "red", 
+                             se = TRUE, 
+                             size = 0.25)
+
 # Create new database only selecting relevant fields
 nhanes_clean <- NHANES |>
   select (ID, Gender, Age, Education,
@@ -75,157 +100,93 @@ summary(nhanes_clean)
 
 # Look at distribution of BMI
 bmi_hist <- ggplot(nhanes_clean, aes(x = BMI)) +
-  geom_histogram(binwidth = 1,
-                 fill = "lightblue",
-                 color = "black",
-                 size = 0.25) +
+  custom_histogram +
   labs(title = "BMI Distribution",
        x = "BMI",
        y = "Count") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_distribution_histogram.png", bmi_hist, width = 4, height = 3, bg = "white")
 
 # Look at distribution of total cholesterol
 tot_chol_hist <- ggplot(nhanes_clean, aes(x = TotChol)) +
-  geom_histogram(binwidth = 0.5,
-                 fill = "lightblue",
-                 color = "black",
-                 size = 0.25) +
+  custom_histogram +
   labs(title = "Total Cholesterol Distribution",
        x = "Total Cholesterol (mg/dL)",
        y = "Count") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/total_cholesterol_distribution_histogram.png", tot_chol_hist, width = 4, height = 3, bg = "white")
 
 # Compare BMI between genders
 bmi_gender_box <- ggplot(nhanes_clean, aes(x = BMI, y = Gender)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Between Genders",
        x = "BMI",
        y = "Gender") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_gender_boxplot.png", bmi_gender_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI among different education levels
 bmi_education_box <- ggplot(nhanes_clean, aes(x = BMI, y = Education)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Among Different Education Levels",
        x = "BMI",
        y = "Education Level") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_education_boxplot.png", bmi_education_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI among different income levels
 bmi_income_box <- ggplot(nhanes_clean, aes(x = BMI, y = HHIncomeV2)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison Between Household Income Brackets",
        x = "BMI",
        y = "Household Income Bracket ($)") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_income_boxplot.png", bmi_income_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI between having diabetes or not
 bmi_diabetes_box <- ggplot(nhanes_clean, aes(x = BMI, y = Diabetes)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison of Diabetes Status",
        x = "BMI",
        y = "Diabetes Status") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_diabetes_boxplot.png", bmi_diabetes_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI between frequency of depression
 bmi_depression_box <- ggplot(nhanes_clean, aes(x = BMI, y = Depressed)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison of Frequency of Depression",
        x = "BMI",
        y = "Depression Status") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_depression_boxplot.png", bmi_depression_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI between drinking status
 bmi_alcohol_box <- ggplot(nhanes_clean, aes(x = BMI, y = Alcohol12PlusYr)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison of Alcohol Status",
        x = "BMI",
        y = "12 Drink Consumption in Any One Year") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_alcohol_boxplot.png", bmi_alcohol_box, width = 4, height = 3, bg = "white")
 
 # Compare BMI between smoking status
 bmi_smoking_box <- ggplot(nhanes_clean, aes(x = BMI, y = Smoke100)) +
-  geom_boxplot(fill = "lightblue",
-               color = "black",
-               width = 0.5,
-               size = 0.25,
-               outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "BMI - Comparison of Smoking Status",
        x = "BMI",
        y = "Smoked >=100 Cigarettes in Lifetime") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_smoking_boxplot.png", bmi_smoking_box, width = 4, height = 3, bg = "white")
 
 # Relationship between BMI and TotChol
 bmi_totchol_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = TotChol)) +
-  geom_point(color = "blue", size = 0.25) +
+  custom_point +
   geom_smooth(aes(color = Gender), method = "lm", se = FALSE, size = 0.25) +
   labs(title = "BMI vs Total Cholesterol",
        x = "BMI",
        y = "Total Cholesterol (mg/dL)") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_totchol_scatter.png", bmi_totchol_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Total Cholesterol
@@ -239,15 +200,12 @@ cor.test(subset(nhanes_clean, Gender == "female")$BMI, subset(nhanes_clean, Gend
 
 # Relationship between BMI and Systolic Blood Pressure
 bmi_bpsys_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = BPSysAve)) +
-  geom_point(color = "blue", size = 0.25) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_point +
+  custom_smooth +
   labs(title = "BMI vs Systolic Blood Pressure",
        x = "BMI",
        y = "Systolic BP") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_bpsys_scatter.png", bmi_bpsys_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Systolic Blood Pressure
@@ -255,15 +213,12 @@ cor.test(nhanes_clean$BMI, nhanes_clean$BPSysAve, method = "pearson")
 
 # Relationship between BMI and Diastolic Blood Pressure
 bmi_bpdia_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
-  geom_point(color = "blue", size = 0.25) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_point +
+  custom_smooth +
   labs(title = "BMI vs Diastolic Blood Pressure",
        x = "BMI",
        y = "Diastolic BP") +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_bpdia_scatter.png", bmi_bpdia_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Diastolic Blood Pressure
@@ -271,15 +226,12 @@ cor.test(nhanes_clean$BMI, nhanes_clean$BPDiaAve, method = "pearson")
 
 # Relationship between BMI and Hours Slept per Night
 bmi_sleep_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_smooth +
   labs(title = "BMI vs Hours Slept Per Night",
        x = "BMI",
        y = "Sleep Hours") +
   scale_y_continuous(breaks = seq(2, 12, by = 1), limits = c(2, 12)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_sleep_trend.png", bmi_sleep_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Hours Slept per Night
@@ -287,15 +239,12 @@ cor.test(nhanes_clean$BMI, nhanes_clean$SleepHrsNight, method = "pearson")
 
 # Relationship between BMI and days of physical activity
 bmi_physactive_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays)) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_smooth +
   labs(title = "BMI vs Days Physically Active",
        x = "BMI",
        y = "No of Physical Active Days") +
   scale_y_continuous(breaks = seq(1, 7, by = 1), limits = c(1, 7)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/bmi_physactive_trend.png", bmi_physactive_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Days Physically Active
@@ -305,42 +254,33 @@ cor.test(nhanes_clean$BMI, nhanes_clean$PhysActiveDays, method = "pearson")
 
 # Relationship between Physical Activity and Diabetes
 physactive_diabetes_box <- ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Diabetes)) +
-  geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "Physical Activity vs Diabetes",
        x = "Days Physically Active",
        y = "Diabetes Status") +
   scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/physactive_diabetes_boxplot.png", physactive_diabetes_box, width = 4, height = 3, bg = "white")
 
 # Relationship between Physical Activity and Depression
 physactive_depression_box <- ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Depressed)) +
-  geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "Physical Activity vs Depression",
        x = "Days Physically Active",
        y = "Depression Frequency") +
   scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/physactive_depression_boxplot.png", physactive_depression_box, width = 4, height = 3, bg = "white")
 
 # Relationship between Physical Activity and Total Cholesterol
 physactive_totchol_scatter <- ggplot(nhanes_clean, aes(x = PhysActiveDays, y = TotChol)) +
-  geom_point(color = "blue", size = 0.25) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_point +
+  custom_smooth +
   labs(title = "Physical Activity vs Total Cholesterol",
        x = "Days Physically Active",
        y = "Total Cholesterol (mg/dL)") +
   scale_x_continuous(breaks = seq(1, 7, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/physactive_totchol_scatter.png", physactive_totchol_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation test for Physical Activity vs Total Cholesterol
@@ -350,42 +290,33 @@ cor.test(nhanes_clean$PhysActiveDays, nhanes_clean$TotChol, method = "pearson")
 
 # Relationship between Sleep and Diabetes
 sleep_diabetes_box <- ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Diabetes)) +
-  geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "Sleep vs Diabetes",
        x = "Hours Slept Per Night",
        y = "Diabetes Status") +
   scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/sleep_diabetes_boxplot.png", sleep_diabetes_box, width = 4, height = 3, bg = "white")
 
 # Relationship between Sleep and Depression
 sleep_depression_box <- ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Depressed)) +
-  geom_boxplot(fill = "lightblue", color = "black", width = 0.5, size = 0.25, outlier.size = 0.25) +
+  custom_boxplot +
   labs(title = "Sleep vs Depression",
        x = "Hours Slept Per Night",
        y = "Depression Frequency") +
   scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/sleep_depression_boxplot.png", sleep_depression_box, width = 4, height = 3, bg = "white")
 
 # Relationship between Sleep and Total Cholesterol
 sleep_totchol_scatter <- ggplot(nhanes_clean, aes(x = SleepHrsNight, y = TotChol)) +
-  geom_point(color = "blue", size = 0.25) +
-  geom_smooth(method = "lm", color = "red", se = TRUE, size = 0.25) +
+  custom_point +
+  custom_smooth +
   labs(title = "Sleep vs Total Cholesterol",
        x = "Hours Slept Per Night",
        y = "Total Cholesterol (mg/dL)") +
   scale_x_continuous(breaks = seq(2, 12, by = 1)) +
-  theme_minimal(base_size = 6) +
-  theme(plot.title = element_text(margin = margin(b = 10)),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+  custom_theme
 ggsave("visualisations/sleep_totchol_scatter.png", sleep_totchol_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation test for Sleep vs Total Cholesterol
