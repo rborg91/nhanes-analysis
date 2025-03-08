@@ -280,7 +280,7 @@ bmi_sleep_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
   theme(plot.title = element_text(margin = margin(b = 10)),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
-ggsave("visualisations/bmi_sleep_scatter.png", bmi_sleep_scatter, width = 4, height = 3, bg = "white")
+ggsave("visualisations/bmi_sleep_trend.png", bmi_sleep_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Hours Slept per Night
 cor.test(nhanes_clean$BMI, nhanes_clean$SleepHrsNight, method = "pearson")
@@ -296,7 +296,7 @@ bmi_physactive_scatter <- ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays))
   theme(plot.title = element_text(margin = margin(b = 10)),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
-ggsave("visualisations/bmi_physactive_scatter.png", bmi_physactive_scatter, width = 4, height = 3, bg = "white")
+ggsave("visualisations/bmi_physactive_trend.png", bmi_physactive_scatter, width = 4, height = 3, bg = "white")
 
 # Correlation and p-value for BMI vs Days Physically Active
 cor.test(nhanes_clean$BMI, nhanes_clean$PhysActiveDays, method = "pearson")
