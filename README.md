@@ -26,7 +26,6 @@ To run this project, ensure you have the following installed:
 
 ```sh
 git clone https://github.com/rborg91/nhanes-analysis.git
-cd nhanes-analysis
 ```
 
 ### Open the Project
