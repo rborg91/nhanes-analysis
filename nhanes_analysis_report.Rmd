@@ -17,9 +17,16 @@ For the complete code and additional details of this project, please visit the [
 
 # Introduction
 
-The National Health and Nutrition Examination Survey (NHANES), conducted by the National Centre for Health Statistics (NCHS) under the Centres for Disease Control and Prevention (CDC), is a comprehensive, ongoing programme designed to assess the health and nutritional status of adults and children across the United States. Combining data from interviews, physical examinations, and laboratory tests, NHANES provides a nationally representative dataset that offers critical insights into population health. This report leverages the NHANES dataset within the R environment to explore the relationship between Body Mass Index (BMI)—a widely used measure of body composition—and various health and lifestyle indicators. Specifically, this analysis seeks to address three key questions: (1) How does BMI vary across demographic groups such as gender, education, and household income? (2) What are the associations between BMI and health indicators, including blood pressure, cholesterol, diabetes, and depression? (3) How do lifestyle factors such as sleep, physical activity, alcohol use, and smoking relate to BMI and broader health outcomes? The goal is to uncover patterns and associations that can inform public health strategies and deepen our understanding of BMI’s role in the health of the U.S. adult population.
+The National Health and Nutrition Examination Survey (NHANES), conducted by the National Centre for Health Statistics (NCHS) under the Centres for Disease Control and Prevention (CDC), is a comprehensive, ongoing programme designed to assess the health and nutritional status of adults and children across the United States. Combining data from interviews, physical examinations, and laboratory tests, NHANES provides a nationally representative dataset that offers critical insights into population health. This report analyses the NHANES dataset within the R environment to explore the relationship between Body Mass Index (BMI)—a widely used measure of body composition—and various health and lifestyle indicators. Specifically, this analysis seeks to address three key questions:
 
-All analyses and visualisations were conducted using R, with the code provided below for transparency and reproducibility.
+1. How does BMI vary across demographic groups such as gender, education, and household income?
+
+2. What are the associations between BMI and health indicators, including blood pressure, cholesterol, diabetes, and depression? 
+3. How do lifestyle factors such as sleep, physical activity, alcohol use, and smoking relate to BMI and broader health outcomes?
+
+The goal is to uncover patterns and associations that can inform public health strategies and deepen our understanding of BMI in the health of the U.S. adult population.
+
+All analyses and visualisations were completed using R, with the code provided below for transparency and reproducibility.
 
 # Data Preparation
 
@@ -29,7 +36,7 @@ The NHANES dataset was obtained from the NHANES library within R and loaded with
 data(NHANES)
 ```
 
-Please note that custom themes were created which is utilised later in the visualisation creation code further on.
+Please note that custom themes were created which is utilised later in the code used to create the visualisations.
 ```{r warning=FALSE, message=FALSE}
 custom_theme <- theme_minimal(base_size = 10) +
         theme(plot.title = element_text(margin = margin(b = 10)),
@@ -57,7 +64,7 @@ custom_smooth <- geom_smooth(method = "lm",
 ```
 
 
-Due to the vast number of fields included in the NHANES dataset, it was decided to only include those fields that were necessary for the purpose of the analysis.
+Only a select number of variables were extracted from the NHANES dataset. The selected variables were chosen because they covered key demographic factors (such as gender, age, and education) and essential health indicators (including BMI, blood pressure, cholesterol, diabetes status, and lifestyle behaviours such as physical activity, smoking, and alcohol consumption). This approach ensured the dataset remained focused and manageable, as the original NHANES dataset contains a large number of variables.
 
 ```{r}
 nhanes_clean <- NHANES |>
@@ -127,7 +134,7 @@ nhanes_clean$HHIncomeV2 <- factor(nhanes_clean$HHIncomeV2,
 
 # Exploratory Analysis
 
-After these actions were completed, the modified dataset contained 2,809 rows of data compared to the original dataset which contained 10,000 rows.
+After these actions were completed, the modified dataset contained 2,809 rows of data compared to the original dataset, which contained 10,000 rows. It should be highlighted that this substantial reduction means that only a small portion of the original data remains, which could impact the reliability and validity of the dataset. The smaller sample size may introduce bias or limit the generalisability of any findings, as certain trends or relationships present in the full dataset may no longer be accurately represented.
 
 ```{r}
 # Count rows in each dataset, therefore showing how many
@@ -136,9 +143,9 @@ nrow(NHANES)
 nrow(nhanes_clean)
 ```
 
-A quick analysis of the dataset showed that there were 1,349 females included versus 1,460 males; the minimum age recorded was 20 years while the maximum age was 80 years (median age was 45 years); the median BMI was 27.29 (categorised as "Overweight") with a significant outlier maximum of 63.30; and a median total cholesterol of 5.020 (considered to be within the recommended range) with a minimum of 1.530 and a maximum of 12.280.
+A quick analysis of the dataset showed that there were 1,349 females included versus 1,460 males; the minimum age recorded was 20 years while the maximum age was 80 years (median age was 45 years); the median BMI was 27.29 (categorised as "Overweight") with a significant outlier maximum of 63.30; and a median total cholesterol of 5.020 mg/dL (considered to be within the recommended range) with a minimum of 1.530 mg/dL and a maximum of 12.280 mg/dL.
 
-See below the code as well as the results of these statistics as well as others.
+See below the code as well as the results of these statistics.
 
 ```{r}
 summary(nhanes_clean)
@@ -147,7 +154,7 @@ summary(nhanes_clean)
 
 The distribution of BMI and total cholesterol amongst the dataset can also be illustrated in the following charts.
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 1. BMI Distribution"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 1. BMI distribution"}
 ggplot(nhanes_clean, aes(x = BMI)) +
   custom_histogram +
   labs(title = "BMI Distribution",
@@ -157,7 +164,7 @@ ggplot(nhanes_clean, aes(x = BMI)) +
 ```
 
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 2. Total Cholesterol Distribution"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 2. Total cholesterol distribution"}
 ggplot(nhanes_clean, aes(x = TotChol)) +
   custom_histogram +
   labs(title = "Total Cholesterol Distribution",
@@ -166,9 +173,9 @@ ggplot(nhanes_clean, aes(x = TotChol)) +
   custom_theme
 ```
 
-# BMI Across Demographic Groups
+## BMI Across Demographic Groups
 
-## BMI by Gender
+### BMI by Gender
 
 Analysis of BMI distribution by gender revealed that males tend to have a slightly higher median BMI than females, though females exhibit a wider range of BMI values, including more extreme outliers. This suggests potential differences in body composition patterns between genders.
 
@@ -181,7 +188,7 @@ ggplot(nhanes_clean, aes(x = BMI, y = Gender)) +
   custom_theme
 ```
 
-## BMI Across Education Levels and Income Brackets
+### BMI Across Education Levels and Income Brackets
 
 The distribution of BMI sat lower amongst College graduates compared to the other levels of education (highest attained), while a similar pattern was found within the highest income bracket ($100,000+) compared to the lower income brackets. Nonetheless, the median BMI for both College graduates as well as for the highest income bracket both sat above 25.
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 4. BMI among education levels - boxplot"}
@@ -201,11 +208,11 @@ ggplot(nhanes_clean, aes(x = BMI, y = HHIncomeV2)) +
   custom_theme
 ```
 
-# Relationships with Health Indicators
+## Relationships with Health Indicators
 
-## BMI and Diabetes/Depression
+### BMI and Diabetes/Depression
 
-Looking at the distribution of BMI for various medical conditions, it was found that those participants that had diabetes did have a BMI that sat much higher than those without diabetes. While the difference between those that have depression often and not was not as pronounced, it was found that those that had depression on most days still had a somewhat higher BMI spread than those that did not.
+Looking at the distribution of BMI for various medical conditions, it was found that those participants that had diabetes did have a BMI that sat much higher than those without diabetes. While the difference between those that have depression often and those who never had depression was not as pronounced, it was found that those that had depression on most days still had a somewhat higher BMI spread than those that did not.
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 6. BMI among diabetes status - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Diabetes)) +
@@ -224,9 +231,9 @@ ggplot(nhanes_clean, aes(x = BMI, y = Depressed)) +
     custom_theme
 ```
 
-## BMI and Alcohol/Smoking
+### BMI and Alcohol/Smoking
 
-Finally, looking at the distribution of BMI amongst those who drink or smoke, it was found that those participants who drank more than 12 standard drinks in any on year tended to have a lower BMI median and spread compared to those who never, while even those who smoked at least 100 cigarettes in their lifetime tended to have a slightly lower median BMI, the spread was very similar to those who didn't smoke.
+Finally, looking at the distribution of BMI amongst those who drink or smoke, it was found that those participants who had drank more than 12 standard drinks in any one year tended to have a lower BMI median and spread compared to those who never did, while even those who smoked at least 100 cigarettes in their lifetime tended to have a slightly lower median BMI, the spread was very similar to those who didn't smoke.
 
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 8. BMI among drinkers and non-drinkers - boxplot"}
 ggplot(nhanes_clean, aes(x = BMI, y = Alcohol12PlusYr)) +
@@ -247,7 +254,7 @@ ggplot(nhanes_clean, aes(x = BMI, y = Smoke100)) +
 
 While the distribution of BMI informed us of some information, the analysis also needed to see the direct relationship with BMI compared to other fields within the dataset and see whether these relationships were both strong and significant.
 
-## BMI and Cholesterol
+### BMI and Cholesterol
 
 Firstly, the relationship between BMI and total cholesterol was analysed. As shown in the chart below, their was no significant direct relationship between BMI and total cholesterol, even when the general pattern was split between males and females.
 ```{r message=FALSE, warning=FALSE, fig.cap=" Figure 10. BMI vs Total Cholesterol"}
@@ -273,11 +280,11 @@ cor.test(subset(nhanes_clean, Gender == "male")$BMI, subset(nhanes_clean, Gender
 cor.test(subset(nhanes_clean, Gender == "female")$BMI, subset(nhanes_clean, Gender == "female")$TotChol, method = "pearson")
 ```
 
-## BMI and Blood Pressure
+### BMI and Blood Pressure
 
 The relationship between BMI and both systolic and diastolic blood pressure was analysed. As shown on the charts below and based on the Pearson's product-moment correlation calculations, it was found that there is a weak but nonetheless positive relationship between BMI and blood pressure, where blood pressure rises as BMI increases. It was also found that these correlations are statistically significant.
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 11. BMI vs Systolic Blood Pressure"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 11. BMI vs systolic blood ressure"}
 ggplot(nhanes_clean, aes(x = BMI, y = BPSysAve)) +
     custom_point +
     custom_smooth +
@@ -289,7 +296,7 @@ ggplot(nhanes_clean, aes(x = BMI, y = BPSysAve)) +
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$BPSysAve, method = "pearson")
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 12. BMI vs Diastolic Blood Pressure"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 12. BMI vs diastolic blood pressure"}
 ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
     custom_point +
     custom_smooth +
@@ -302,11 +309,11 @@ ggplot(nhanes_clean, aes(x = BMI, y = BPDiaAve)) +
 cor.test(nhanes_clean$BMI, nhanes_clean$BPDiaAve, method = "pearson")
 ```
 
-## BMI and Sleep Hours/Physical Activity
+### BMI and Sleep Hours/Physical Activity
 
 Looking at the relationship between BMI and hours slept per night, it was found that there is a weak but statistically significant negative correlation between number of hours slept versus BMI where BMI raises as hours slept reduces. In addition, there was also found to have been a similar statistically significant pattern between days of physical activity versus BMI where BMI increases as days of physical activity reduces.
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 13. BMI vs Hours Slept per Night"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 13. BMI vs hours slept per night"}
 ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
     custom_smooth +
     labs(title = "BMI vs Hours Slept Per Night",
@@ -318,7 +325,7 @@ ggplot(nhanes_clean, aes(x = BMI, y = SleepHrsNight)) +
 ```{r}
 cor.test(nhanes_clean$BMI, nhanes_clean$SleepHrsNight, method = "pearson")
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 14. BMI vs Days of Physical Activity"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 14. BMI vs days of physical activity"}
 ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays)) +
     custom_smooth +
     labs(title = "BMI vs Days Physically Active",
@@ -331,13 +338,13 @@ ggplot(nhanes_clean, aes(x = BMI, y = PhysActiveDays)) +
 cor.test(nhanes_clean$BMI, nhanes_clean$PhysActiveDays, method = "pearson")
 ```
 
-# Physical Activity and its Impact on Other Health Factors
+## Physical Activity and its Impact on Other Health Factors
 
 While the main aim of this analysis was to look at the relationship of BMI to other health indicators and lifestyle choices, it was decided to further explore the relationship of days of physical activity to other indicators of health to see whether physical activity does in fact have a significant postivie influence on the health of the participants in this dataset.
 
-It was found that the participants who had diabetes actually had a higher median of days of physical activity as well as more distribution in the higher number of days of physical activity compared to those who do not have diabetes. On the other hand, there was no difference found in the distribution of physical activity days between those with varying levels of depression. Analysing the relationship between days of physical activity and total cholesterol, there was found to be a weak but signficantly significant positive relationshop where days of physical activity correlates slightly with a higher level of total cholesterol.
+It was found that the participants who had diabetes actually had a higher median number of days of physical activity as well as more distribution in the higher number of days of physical activity compared to those who do not have diabetes. On the other hand, there was no difference found in the distribution of physical activity days between those with varying levels of depression. Analysing the relationship between days of physical activity and total cholesterol, there was found to be a weak but statistically significant positive relationship where days of physical activity correlates slightly with a higher level of total cholesterol.
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 15. Distribution of Physical Activity Days Between Diabetes Status"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 15. Distribution of physical activity days between diabetes Status"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Diabetes)) +
     custom_boxplot +
     labs(title = "Physical Activity vs Diabetes",
@@ -346,7 +353,7 @@ ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Diabetes)) +
     scale_x_continuous(breaks = seq(1, 7, by = 1)) +
     custom_theme
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 16. Distribution of Physical Activity Days Between Depression Status"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 16. Distribution of physical activity days between depression status"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Depressed)) +
     custom_boxplot +
     labs(title = "Physical Activity vs Depression",
@@ -355,7 +362,7 @@ ggplot(nhanes_clean, aes(x = PhysActiveDays, y = Depressed)) +
     scale_x_continuous(breaks = seq(1, 7, by = 1)) +
     custom_theme
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 17. Relationship between Days of Physical Activity and Total Cholesterol"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 17. Relationship between days of physical activity and total cholesterol"}
 ggplot(nhanes_clean, aes(x = PhysActiveDays, y = TotChol)) +
     custom_point +
     custom_smooth +
@@ -369,7 +376,7 @@ ggplot(nhanes_clean, aes(x = PhysActiveDays, y = TotChol)) +
 cor.test(nhanes_clean$PhysActiveDays, nhanes_clean$TotChol, method = "pearson")
 ```
 
-# Sleep and Its Impact on Other Health Factors
+## Sleep and Its Impact on Other Health Factors
 
 A similar analysis was completed on the effect of number of hours slept per night on similar health indicators.
 
@@ -377,7 +384,7 @@ It was found that the distribution of sleep hours between those with diabetes an
 
 In addition, there was found to be no statistically significant correlation between sleep hours and total cholesterol.
 
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 18. Distribution of Sleep Hours Between Diabetes Status"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 18. Distribution of sleep hours between diabetes status"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Diabetes)) +
     custom_boxplot +
     labs(title = "Sleep vs Diabetes",
@@ -386,7 +393,7 @@ ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Diabetes)) +
     scale_x_continuous(breaks = seq(2, 12, by = 1)) +
     custom_theme
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 19. Distribution of Sleep Hours Between Depression Status"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 19. Distribution of sleep hours between depression status"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Depressed)) +
     custom_boxplot +
     labs(title = "Sleep vs Depression",
@@ -395,7 +402,7 @@ ggplot(nhanes_clean, aes(x = SleepHrsNight, y = Depressed)) +
     scale_x_continuous(breaks = seq(2, 12, by = 1)) +
     custom_theme
 ```
-```{r message=FALSE, warning=FALSE, fig.cap=" Figure 20. Relationship between Sleep Hours and Total Cholesterol"}
+```{r message=FALSE, warning=FALSE, fig.cap=" Figure 20. Relationship between sleep hours and total Cholesterol"}
 ggplot(nhanes_clean, aes(x = SleepHrsNight, y = TotChol)) +
     custom_point +
     custom_smooth +
@@ -408,3 +415,23 @@ ggplot(nhanes_clean, aes(x = SleepHrsNight, y = TotChol)) +
 ```{r}
 cor.test(nhanes_clean$SleepHrsNight, nhanes_clean$TotChol, method = "pearson")
 ```
+
+# Conclusion
+
+This analysis of the NHANES dataset explored the relationships between Body Mass Index (BMI) and various demographic, health, and lifestyle factors. The findings highlight several key patterns:
+
+- **Demographic Differences**: Males exhibited a slightly higher median BMI than females, though females had a wider range of BMI values. BMI was generally lower among college graduates and individuals in higher income brackets, although even within these groups, the median BMI remained in the overweight category.
+
+- **Health Associations**: BMI showed a clear association with diabetes, as individuals with diabetes had significantly higher BMI levels. A weaker but still notable relationship was observed with depression, where those experiencing depression most days had slightly higher BMI values. Notably, there was no significant relationship between BMI and total cholesterol levels.
+
+- **Lifestyle Factors**: Alcohol consumption and smoking appeared to be minimally linked to lower BMI values, although the extent of this association requires further investigation to determine causality. Sleep duration and physical activity were also examined, with indications that reduced physical activity and shorter sleep durations may contribute to higher BMI.
+
+- **Blood Pressure Relationship**: A statistically significant but weak positive correlation was found between BMI and both systolic and diastolic blood pressure, indicating that individuals with higher BMI tend to have higher blood pressure levels.
+
+In regards to the effect of physical activity and sleep on other health indicators, the following patterns were found:
+
+- **Days of Physical Activity** - Surprisingly, those with diabetes had a higher number of physical active days, as well as a weak but statistically significant positive relationship with total cholesterol. Further exploration could be done on the effect that hours of physical activity per week has on these indicators of health.
+
+- **Hours Slept Per Night**: Sleep hours only seemed to demonstrate a difference among those whose suffered from depression most days, with a lower amount of sleep hours recorded. Further exploration could be done on the effect that quality of sleep has on these indicators of health.
+
+While this study provides useful insights, the significant data reduction (from 10,000 to 2,809 participants) may limit the generalisability of the findings.
