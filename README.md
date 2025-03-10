@@ -35,7 +35,7 @@ git clone https://github.com/rborg91/nhanes-analysis.git
 
 ### Restore Dependencies
 
-To ensure all required packages are installed, run the following in R:
+To ensure all required packages are installed, run the following in R and follow the prompts:
 
 ```r
 install.packages("renv")  # If renv is not installed
@@ -43,6 +43,15 @@ renv::restore()
 ```
 
 This will install the exact package versions specified in `renv.lock`.
+
+If you encounter any issues with the installation of the packages, then run:
+
+```r
+install.packages("renv")  # If renv is not installed
+renv::install()
+```
+
+Alternatively, you can manually install the packages which are causing errors with installation, or open up an [issue](https://github.com/rborg91/nhanes-analysis/issues) in this repository.
 
 ### Run the Analysis
 
