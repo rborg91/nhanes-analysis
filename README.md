@@ -47,7 +47,6 @@ This will install the exact package versions specified in `renv.lock`.
 If you encounter any issues with the installation of the packages, then run:
 
 ```r
-install.packages("renv")  # If renv is not installed
 renv::install()
 ```
 
